@@ -1,0 +1,61 @@
+<div class="page">
+  <section class="card">
+    <h1>Todo List</h1>
+
+    <div class="input-row">
+      <input
+        type="text"
+        [(ngModel)]="newTask"
+        (keydown.enter)="addTodo()"
+        placeholder="Enter a task"
+      />
+      <button type="button" (click)="addTodo()">Add</button>
+    </div>
+
+    <div class="filters">
+      <button
+        type="button"
+        [class.active]="selectedFilter() === 'all'"
+        (click)="setFilter('all')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedFilter() === 'active'"
+        (click)="setFilter('active')"
+      >
+        Active
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedFilter() === 'completed'"
+        (click)="setFilter('completed')"
+      >
+        Completed
+      </button>
+    </div>
+
+    @if (filteredTodos().length === 0) {
+      <p class="empty">No tasks yet.</p>
+    } @else {
+      <ul>
+        @for (todo of filteredTodos(); track todo.id) {
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                [checked]="todo.completed"
+                (change)="toggleTodo(todo.id)"
+              />
+              <span [class.completed]="todo.completed">{{ todo.text }}</span>
+            </label>
+            <button type="button" class="delete" (click)="deleteTodo(todo.id)">
+              Delete
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>
