@@ -1,5 +1,7 @@
-import { Component, effect, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+type Filter = 'all' | 'active' | 'completed';
 
 interface TodoItem {
   id: number;
@@ -18,13 +20,33 @@ export class TodoComponent {
   private readonly storageKey = 'todos';
 
   newTask = '';
+  selectedFilter = signal<Filter>('all');
 
   todos = signal<TodoItem[]>(this.loadTodos());
+
+  filteredTodos = computed(() => {
+    const currentFilter = this.selectedFilter();
+    const items = this.todos();
+
+    if (currentFilter === 'active') {
+      return items.filter((item) => !item.completed);
+    }
+
+    if (currentFilter === 'completed') {
+      return items.filter((item) => item.completed);
+    }
+
+    return items;
+  });
 
   constructor() {
     effect(() => {
       localStorage.setItem(this.storageKey, JSON.stringify(this.todos()));
     });
+  }
+
+  setFilter(filter: Filter): void {
+    this.selectedFilter.set(filter);
   }
 
   addTodo(): void {

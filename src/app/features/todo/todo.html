@@ -12,11 +12,35 @@
       <button type="button" (click)="addTodo()">Add</button>
     </div>
 
-    @if (todos().length === 0) {
+    <div class="filters">
+      <button
+        type="button"
+        [class.active]="selectedFilter() === 'all'"
+        (click)="setFilter('all')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedFilter() === 'active'"
+        (click)="setFilter('active')"
+      >
+        Active
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedFilter() === 'completed'"
+        (click)="setFilter('completed')"
+      >
+        Completed
+      </button>
+    </div>
+
+    @if (filteredTodos().length === 0) {
       <p class="empty">No tasks yet.</p>
     } @else {
       <ul>
-        @for (todo of todos(); track todo.id) {
+        @for (todo of filteredTodos(); track todo.id) {
           <li>
             <label>
               <input

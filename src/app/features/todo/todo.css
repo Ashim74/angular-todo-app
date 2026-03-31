@@ -49,6 +49,22 @@ button {
   color: #fff;
 }
 
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filters button {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.filters button.active {
+  background: #1f2937;
+  color: #fff;
+}
+
 ul {
   list-style: none;
   margin: 0;
