@@ -1,1 +1,21 @@
-<app-todo></app-todo>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">TaskFlow Enterprise</div>
+
+    <nav>
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/todos" routerLinkActive="active">Task Management</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <h1>Operations Workspace</h1>
+      <p>Manage teams, priorities, and delivery outcomes.</p>
+    </header>
+
+    <section class="panel">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>
