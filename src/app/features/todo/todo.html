@@ -2,15 +2,15 @@
   <section class="card">
     <h1>Todo List</h1>
 
-    <div class="input-row">
+    <form class="input-row" (ngSubmit)="addTodo()">
       <input
         type="text"
         [(ngModel)]="newTask"
-        (keydown.enter)="addTodo()"
+        name="task"
         placeholder="Enter a task"
       />
-      <button type="button" (click)="addTodo()">Add</button>
-    </div>
+      <button type="submit">Add</button>
+    </form>
 
     <div class="filters">
       <button

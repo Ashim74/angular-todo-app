@@ -1,4 +1,4 @@
-import { Component, Signal, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, computed, signal } from '@angular/core';
 
 import { TodoItem, TodoStoreService } from './todo-store.service';
 
@@ -6,6 +6,7 @@ type Filter = 'all' | 'active' | 'completed';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-todo',
   templateUrl: './todo.html',
   styleUrl: './todo.css'
