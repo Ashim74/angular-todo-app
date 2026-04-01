@@ -1,4 +1,5 @@
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
+
 type Filter = 'all' | 'active' | 'completed';
 
 interface TodoItem {
@@ -15,10 +16,10 @@ interface TodoItem {
 })
 export class TodoComponent {
   private readonly storageKey = 'todos';
+  private saveDebounceId: number | null = null;
 
   newTask = '';
   selectedFilter = signal<Filter>('all');
-
   todos = signal<TodoItem[]>(this.loadTodos());
 
   filteredTodos = computed(() => {
@@ -35,12 +36,6 @@ export class TodoComponent {
 
     return items;
   });
-
-  constructor() {
-    effect(() => {
-      localStorage.setItem(this.storageKey, JSON.stringify(this.todos()));
-    });
-  }
 
   setFilter(filter: Filter): void {
     this.selectedFilter.set(filter);
@@ -63,6 +58,7 @@ export class TodoComponent {
     ]);
 
     this.newTask = '';
+    this.schedulePersist();
   }
 
   toggleTodo(id: number): void {
@@ -71,10 +67,24 @@ export class TodoComponent {
         item.id === id ? { ...item, completed: !item.completed } : item
       )
     );
+
+    this.schedulePersist();
   }
 
   deleteTodo(id: number): void {
     this.todos.update((items) => items.filter((item) => item.id !== id));
+    this.schedulePersist();
+  }
+
+  private schedulePersist(): void {
+    if (this.saveDebounceId !== null) {
+      window.clearTimeout(this.saveDebounceId);
+    }
+
+    this.saveDebounceId = window.setTimeout(() => {
+      localStorage.setItem(this.storageKey, JSON.stringify(this.todos()));
+      this.saveDebounceId = null;
+    }, 75);
   }
 
   private loadTodos(): TodoItem[] {
