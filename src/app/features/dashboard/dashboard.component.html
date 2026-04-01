@@ -1,0 +1,9 @@
+<h2>Dashboard Overview</h2>
+<p class="subtitle">High-level performance snapshot for your delivery squads.</p>
+
+<div class="kpis">
+  <article class="kpi" *ngFor="let kpi of kpis">
+    <span>{{ kpi.title }}</span>
+    <strong>{{ kpi.value }}</strong>
+  </article>
+</div>

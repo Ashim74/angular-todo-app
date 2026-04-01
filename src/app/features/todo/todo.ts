@@ -1,6 +1,4 @@
 import { Component, computed, effect, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
 type Filter = 'all' | 'active' | 'completed';
 
 interface TodoItem {
@@ -10,9 +8,8 @@ interface TodoItem {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-todo',
-  standalone: true,
-  imports: [FormsModule],
   templateUrl: './todo.html',
   styleUrl: './todo.css'
 })

@@ -1,0 +1,32 @@
+h2 {
+  margin: 0;
+}
+
+.subtitle {
+  color: #64748b;
+  margin: 0.5rem 0 1rem;
+}
+
+.kpis {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.kpi {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.kpi span {
+  color: #475569;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.kpi strong {
+  display: block;
+  font-size: 1.5rem;
+  margin-top: 0.25rem;
+}
