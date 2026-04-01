@@ -1,12 +1,8 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, Signal, computed, signal } from '@angular/core';
+
+import { TodoItem, TodoStoreService } from './todo-store.service';
 
 type Filter = 'all' | 'active' | 'completed';
-
-interface TodoItem {
-  id: number;
-  text: string;
-  completed: boolean;
-}
 
 @Component({
   standalone: false,
@@ -15,14 +11,11 @@ interface TodoItem {
   styleUrl: './todo.css'
 })
 export class TodoComponent {
-  private readonly storageKey = 'todos';
-  private saveDebounceId: number | null = null;
-
   newTask = '';
   selectedFilter = signal<Filter>('all');
-  todos = signal<TodoItem[]>(this.loadTodos());
+  readonly todos: Signal<TodoItem[]>;
 
-  filteredTodos = computed(() => {
+  readonly filteredTodos = computed(() => {
     const currentFilter = this.selectedFilter();
     const items = this.todos();
 
@@ -37,6 +30,10 @@ export class TodoComponent {
     return items;
   });
 
+  constructor(private readonly todoStore: TodoStoreService) {
+    this.todos = this.todoStore.todos;
+  }
+
   setFilter(filter: Filter): void {
     this.selectedFilter.set(filter);
   }
@@ -48,74 +45,15 @@ export class TodoComponent {
       return;
     }
 
-    this.todos.update((items) => [
-      ...items,
-      {
-        id: Date.now(),
-        text,
-        completed: false
-      }
-    ]);
-
+    this.todoStore.add(text);
     this.newTask = '';
-    this.schedulePersist();
   }
 
   toggleTodo(id: number): void {
-    this.todos.update((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
-    );
-
-    this.schedulePersist();
+    this.todoStore.toggle(id);
   }
 
   deleteTodo(id: number): void {
-    this.todos.update((items) => items.filter((item) => item.id !== id));
-    this.schedulePersist();
-  }
-
-  private schedulePersist(): void {
-    if (this.saveDebounceId !== null) {
-      window.clearTimeout(this.saveDebounceId);
-    }
-
-    this.saveDebounceId = window.setTimeout(() => {
-      localStorage.setItem(this.storageKey, JSON.stringify(this.todos()));
-      this.saveDebounceId = null;
-    }, 75);
-  }
-
-  private loadTodos(): TodoItem[] {
-    const savedTodos = localStorage.getItem(this.storageKey);
-
-    if (!savedTodos) {
-      return this.defaultTodos();
-    }
-
-    try {
-      const parsed = JSON.parse(savedTodos);
-
-      if (!Array.isArray(parsed)) {
-        return this.defaultTodos();
-      }
-
-      return parsed.filter(
-        (item): item is TodoItem =>
-          typeof item?.id === 'number' &&
-          typeof item?.text === 'string' &&
-          typeof item?.completed === 'boolean'
-      );
-    } catch {
-      return this.defaultTodos();
-    }
-  }
-
-  private defaultTodos(): TodoItem[] {
-    return [
-      { id: 1, text: 'Learn Angular basics', completed: false },
-      { id: 2, text: 'Build a Todo app', completed: true }
-    ];
+    this.todoStore.remove(id);
   }
 }
